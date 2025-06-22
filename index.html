@@ -264,210 +264,111 @@
   <script>
 
 
+    const btn = document.getElementById("play-music");
+    const audio = document.getElementById("musik");
+    const icon = document.getElementById("music-icon");
+    const label = document.getElementById("music-label");
 
-
-  const btn = document.getElementById("play-music");
-  const audio = document.getElementById("musik");
-  const icon = document.getElementById("music-icon");
-  const label = document.getElementById("music-label");
-
-  btn.addEventListener("click", () => {
-    if (audio.paused) {
-      audio.play();
-      icon.src = "play_bt.svg";
-      icon.alt = "Pause";
-      label.textContent = "Pause Music";
-    } else {
-      audio.pause();
-      icon.src = "play_bt.svg";
-      icon.alt = "Play";
-      label.textContent = "Play Music";
-    }
-  });
-
-  function updateClock() {
-    const now = new Date();
-    const h = now.getHours().toString().padStart(2, '0');
-    const m = now.getMinutes().toString().padStart(2, '0');
-    document.getElementById('clock').textContent = `${h}:${m}`;
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
-
-  function updateStats() {
-    const cpu = Math.floor(Math.random() * 50) + 10;
-    const ram = Math.floor(Math.random() * 80) + 10;
-    const storage = Math.floor(Math.random() * 90) + 5;
-    document.getElementById("cpu").textContent = cpu + "%";
-    document.getElementById("ram").textContent = ram + "%";
-    document.getElementById("storage").textContent = storage + "%";
-  }
-  setInterval(updateStats, 3000);
-  updateStats();
-
-  async function updateWeather() {
-    const weatherEl = document.getElementById("weather");
-    if (!navigator.geolocation) {
-      weatherEl.textContent = "❌ Lokasi Tidak Didukung";
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const lat = pos.coords.latitude;
-      const lon = pos.coords.longitude;
-      try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-        if (!res.ok) throw new Error("Respon HTTP tidak OK");
-
-        const data = await res.json();
-        const suhu = data?.current_weather?.temperature;
-        if (typeof suhu !== "number") throw new Error("Data suhu tidak valid");
-
-        weatherEl.textContent = `🌡️ ${suhu}°C`;
-      } catch (err) {
-  <script>
-  const btn = document.getElementById("play-music");
-  const audio = document.getElementById("musik");
-  const icon = document.getElementById("music-icon");
-  const label = document.getElementById("music-label");
-
-  btn.addEventListener("click", () => {
-  if (audio.paused) {
-    audio.play();
-    icon.src = "play_bt.svg";
-    icon.alt = "Pause";
-    label.textContent = "Pause Music";
-  } else {
-    audio.pause();
-    icon.src = "play_bt.svg";
-    icon.alt = "Play";
-    label.textContent = "Play Music";
-  }
-  });
-
-  function updateClock() {
-  const now = new Date();
-  const h = now.getHours().toString().padStart(2, '0');
-  const m = now.getMinutes().toString().padStart(2, '0');
-  document.getElementById('clock').textContent = `${h}:${m}`;
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
-
-  function updateStats() {
-  const cpu = Math.floor(Math.random() * 50) + 10;
-  const ram = Math.floor(Math.random() * 80) + 10;
-  const storage = Math.floor(Math.random() * 90) + 5;
-  document.getElementById("cpu").textContent = cpu + "%";
-  document.getElementById("ram").textContent = ram + "%";
-  document.getElementById("storage").textContent = storage + "%";
-  }
-  setInterval(updateStats, 3000);
-  updateStats();
-
-  async function updateWeather() {
-  const weatherEl = document.getElementById("weather");
-  if (!navigator.geolocation) {
-    weatherEl.textContent = "❌ Lokasi Tidak Didukung";
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(async (pos) => {
-    const lat = pos.coords.latitude;
-    const lon = pos.coords.longitude;
-    try {
-      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-      if (!res.ok) throw new Error("Respon HTTP tidak OK");
-      const data = await res.json();
-      const suhu = data?.current_weather?.temperature;
-      if (typeof suhu !== "number") throw new Error("Data suhu tidak valid");
-      weatherEl.textContent = `🌡️ ${suhu}°C`;
-    } catch (err) {
-      console.error("Gagal memuat cuaca:", err);
-      weatherEl.textContent = "❌ Cuaca Tidak Tersedia";
-    }
-  }, () => {
-    weatherEl.textContent = "❌ Gagal Ambil Lokasi";
-  });
-  }
-  updateWeather();
-
-  const commentInput = document.getElementById("commentInput");
-  const commentList = document.getElementById("commentList");
-
-  // Simpan komentar ke localStorage
-  function saveLocalComment(username, comment) {
-  const existing = JSON.parse(localStorage.getItem("localComments") || "[]");
-  existing.push({ username, comment });
-  localStorage.setItem("localComments", JSON.stringify(existing));
-  }
-
-  // Tampilkan komentar ke layar
-  function displayComment(username, comment) {
-  const commentItem = document.createElement("div");
-  commentItem.className = "comment-item";
-
-  const text = document.createElement("span");
-  text.className = "comment-text";
-  text.textContent = `${username}: ${comment}`;
-
-  const actions = document.createElement("span");
-  actions.className = "comment-actions";
-
-  const likeBtn = document.createElement("button");
-  likeBtn.textContent = "👍";
-  likeBtn.onclick = () => {
-    likeBtn.textContent = likeBtn.textContent === "👍" ? "❤️" : "👍";
-  };
-
-  const deleteBtn = document.createElement("button");
-  deleteBtn.textContent = "🗑️";
-  deleteBtn.onclick = () => {
-    commentItem.remove();
-  };
-
-  actions.appendChild(likeBtn);
-  actions.appendChild(deleteBtn);
-  commentItem.appendChild(text);
-  commentItem.appendChild(actions);
-  commentList.appendChild(commentItem);
-  }
-
-  // Muat komentar lokal dari localStorage
-  function loadLocalComments() {
-  const localData = JSON.parse(localStorage.getItem("localComments") || "[]");
-  localData.forEach(c => displayComment(c.username, c.comment));
-  }
-  loadLocalComments();
-
-  // Muat komentar dari NPoint (hanya sekali di awal)
-  fetch("https://api.npoint.io/e26c821ed54f1f42ceb0")
-  .then(res => res.json())
-  .then(data => {
-    data.forEach(item => {
-      displayComment(item.username, item.comment);
+    btn.addEventListener("click", () => {
+      if (audio.paused) {
+        audio.play();
+        icon.src = "play_bt.svg";
+        icon.alt = "Pause";
+        label.textContent = "Pause Music";
+      } else {
+        audio.pause();
+        icon.src = "play_bt.svg";
+        icon.alt = "Play";
+        label.textContent = "Play Music";
+      }
     });
-  })
-  .catch(err => console.error("Gagal memuat komentar dari API:", err));
 
-  // Ambil username saat fokus input
-  commentInput.addEventListener("focus", () => {
-  if (!localStorage.getItem("username")) {
-    const inputName = prompt("Masukkan username kamu:") || "Anonim";
-    localStorage.setItem("username", inputName);
-  }
-  });
+    function updateClock() {
+      const now = new Date();
+      const h = now.getHours().toString().padStart(2, '0');
+      const m = now.getMinutes().toString().padStart(2, '0');
+      document.getElementById('clock').textContent = `${h}:${m}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
 
-  // Saat Enter ditekan, simpan komentar lokal
-  commentInput.addEventListener("keypress", function(e) {
-  if (e.key === "Enter" && commentInput.value.trim()) {
-    const username = localStorage.getItem("username") || "Anonim";
-    const commentText = commentInput.value.trim();
-    saveLocalComment(username, commentText);
-    displayComment(username, commentText);
-    commentInput.value = "";
-  }
-  });
+    function updateStats() {
+      const cpu = Math.floor(Math.random() * 50) + 10;
+      const ram = Math.floor(Math.random() * 80) + 10;
+      const storage = Math.floor(Math.random() * 90) + 5;
+      document.getElementById("cpu").textContent = cpu + "%";
+      document.getElementById("ram").textContent = ram + "%";
+      document.getElementById("storage").textContent = storage + "%";
+    }
+    setInterval(updateStats, 3000);
+    updateStats();
+
+    function updateWeather() {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+          const data = await res.json();
+          const suhu = data.current_weather.temperature;
+          document.getElementById("weather").textContent = `🌡️ ${suhu}°C`;
+        }, () => {
+          document.getElementById("weather").textContent = "❌ Gagal Ambil Cuaca";
+        });
+      } else {
+        document.getElementById("weather").textContent = "❌ Lokasi Tidak Didukung";
+      }
+    }
+
+    updateWeather();
+
+    const commentInput = document.getElementById("commentInput");
+    const commentList = document.getElementById("commentList");
+
+    commentInput.addEventListener("focus", () => {
+      if (!localStorage.getItem("username")) {
+        const inputName = prompt("Masukkan username kamu:") || "Anonim";
+        localStorage.setItem("username", inputName);
+      }
+    });
+
+    commentInput.addEventListener("keypress", function(e) {
+      if (e.key === "Enter" && commentInput.value.trim()) {
+        const username = localStorage.getItem("username") || "Anonim";
+        const commentText = commentInput.value.trim();
+
+        const comment = document.createElement("div");
+        comment.className = "comment-item";
+
+        const text = document.createElement("span");
+        text.className = "comment-text";
+        text.textContent = `${username}: ${commentText}`;
+
+        const actions = document.createElement("span");
+        actions.className = "comment-actions";
+
+        const likeBtn = document.createElement("button");
+        likeBtn.textContent = "👍";
+        likeBtn.addEventListener("click", () => {
+          likeBtn.textContent = likeBtn.textContent === "👍" ? "❤️" : "👍";
+        });
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "🗑️";
+        deleteBtn.addEventListener("click", () => {
+          comment.remove();
+        });
+
+        actions.appendChild(likeBtn);
+        actions.appendChild(deleteBtn);
+
+        comment.appendChild(text);
+        comment.appendChild(actions);
+
+        commentList.appendChild(comment);
+        commentInput.value = "";
+      }
+    });
   </script>
 </body>
 </html>
