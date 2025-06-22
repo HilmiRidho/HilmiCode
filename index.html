@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Glass Navbar di Atas Video</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      position: relative;
+      background: #000;
+    }
+
+    .bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .taskbar-btn {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+    }
+
+    .taskbar-btn:hover {
+      background: rgba(255,255,255,0.3);
+      color: #000;
+    }
+
+    .taskbar-btn img.icon {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      display: inline-block;
+    }
+
+    .taskbar {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 800px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 2;
+    }
+
+    .taskbar-main-top {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 800px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 3;
+    }
+
+    .topbar-content {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .topbar-content #clock,
+    .topbar-content #weather {
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    /* Statistik Panel di atas taskbar bawah */
+    .stats-panel {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 600px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 16px;
+      display: flex;
+      justify-content: space-around;
+      color: white;
+      z-index: 2;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Video sebagai latar -->
+  <video autoplay muted loop playsinline class="bg-video">
+    <source src="video_bg.mp4" type="video/mp4">
+    Browser kamu tidak mendukung video background.
+  </video>
+
+  <!-- Taskbar atas -->
+  <div class="taskbar-main-top">
+    <div class="topbar-content">
+      <button id="play-music" class="taskbar-btn">🎵 Play Music</button>
+      <div id="clock">00:00</div>
+      <div id="weather">🌤️ 27°C</div>
+    </div>
+  </div>
+
+  <!-- Panel statistik di atas taskbar -->
+  <div class="stats-panel">
+    <div class="stat-item">🧠 CPU: <span id="cpu">--%</span></div>
+    <div class="stat-item">💾 RAM: <span id="ram">--%</span></div>
+    <div class="stat-item">🗄️ Storage: <span id="storage">--%</span></div>
+  </div>
+
+  <!-- Taskbar bawah -->
+  <div class="taskbar">
+    <button class="taskbar-btn"><img src="voila_bt.svg" alt="About" class="icon"> Voila!</button>
+    <button class="taskbar-btn"><img src="home_bt.svg" alt="Home" class="icon"></button>
+    <button class="taskbar-btn"><img src="about_bt.svg" alt="About" class="icon"> About</button>
+  </div>
+
+  <!-- Audio -->
+  <audio id="musik" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // Musik toggle
+    const btn = document.getElementById("play-music");
+    const audio = document.getElementById("musik");
+
+    btn.addEventListener("click", () => {
+      if (audio.paused) {
+        audio.play();
+        btn.textContent = "⏸️ Pause Music";
+      } else {
+        audio.pause();
+        btn.textContent = "🎵 Play Music";
+      }
+    });
+
+    // Jam realtime
+    function updateClock() {
+      const now = new Date();
+      const h = now.getHours().toString().padStart(2, '0');
+      const m = now.getMinutes().toString().padStart(2, '0');
+      document.getElementById('clock').textContent = `${h}:${m}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Statistik dummy
+    function updateStats() {
+      const cpu = Math.floor(Math.random() * 50) + 10;
+      const ram = Math.floor(Math.random() * 80) + 10;
+      const storage = Math.floor(Math.random() * 90) + 5;
+      document.getElementById("cpu").textContent = cpu + "%";
+      document.getElementById("ram").textContent = ram + "%";
+      document.getElementById("storage").textContent = storage + "%";
+    }
+    setInterval(updateStats, 3000);
+    updateStats();
+  </script>
+</body>
+</html>

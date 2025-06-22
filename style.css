@@ -1,0 +1,52 @@
+button {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Jarak antara gambar dan teks */
+}
+
+button img.icon {
+  width: 20px;
+  height: 20px;
+  filter: invert(1);
+  display: inline-block;
+  vertical-align: middle;
+  object-fit: contain;
+}
+.bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Tambahkan ke dalam <style> */
+
+.stats-panel {
+  position: fixed;
+  bottom: 100px; /* sedikit di atas taskbar bawah */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 600px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-around;
+  color: white;
+  z-index: 2;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
