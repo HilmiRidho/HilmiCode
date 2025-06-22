@@ -1,3 +1,3 @@
-document.querySelector("button").addEventListener("click", () => {
-  alert("Tombol Mulai ditekan!\nHalo Hilmi 👋");
+document.getElementById("mulai-btn").addEventListener("click", () => {
+  alert("Kamu menekan tombol! Fitur eksplorasi akan segera hadir.");
 });
