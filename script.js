@@ -108,8 +108,16 @@ db.collection("comments")
       const comment = document.createElement("div");
       comment.className = "comment-item";
 
-      const text = document.createElement("span");
-      text.textContent = `${data.username}: ${data.comment}`;
+      const urlifiedComment = data.comment.replace(
+  /\b((https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{1,63}(\/[^\s]*)?)/gi,
+  (match) => {
+    const href = match.startsWith("http") ? match : `https://${match}`;
+    return `<a href="${href}" target="_blank" style="color:#FFFFFF;text-decoration:underline;">${match}</a>`;
+  }
+);
+const text = document.createElement("span");
+text.innerHTML = `${data.username}: ${urlifiedComment}`;
+
 
       const actions = document.createElement("span");
       actions.className = "comment-actions";
