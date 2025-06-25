@@ -163,7 +163,7 @@ body {
 }
 
 .comment-list {
-  max-height: 110px;
+  max-height: 90px;
   overflow-y: auto;
   scrollbar-color: rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.05);
   scrollbar-width: thin;
