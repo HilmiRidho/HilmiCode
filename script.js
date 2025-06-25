@@ -16,7 +16,6 @@ auth.signInAnonymously().catch(console.error);
 auth.onAuthStateChanged((user) => {
   if (user) {
     currentUser = user;
-
     alert("UID kamu: " + user.uid);
 
     if (!localStorage.getItem("username")) {
