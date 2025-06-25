@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", () => {
 firebase.initializeApp({
   apiKey: "AIzaSyDf64ttRcxVtyv_xhb06bHopD1kUiFJI9Y",
   authDomain: "hilmicode-comment.firebaseapp.com",
