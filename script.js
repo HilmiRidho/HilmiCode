@@ -54,7 +54,7 @@ function updateWeather() {
       const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
       const data = await res.json();
       const suhu = data.current_weather.temperature;
-      document.getElementById("weather").innerHTML = `<span style="display: flex; align-items: center; gap: 6px;"><img src="temp.svg" alt="Suhu" style="width: 20px; height: 20px;"> ${suhu}°C</span>`;
+      document.getElementById("weather").innerHTML = `<span style="display: flex; align-items: center; gap: 6px;"><img src="temp.svg" alt="Suhu" style="width: 20px; height: 20px;"> ${suhu}Â°C</span>`;
     }, () => {
       document.getElementById("weather").textContent = "Gagal Ambil Cuaca";
     });
@@ -64,6 +64,7 @@ function updateWeather() {
 }
 updateWeather();
 
+// Komentar
 const commentInput = document.getElementById("commentInput");
 const commentList = document.getElementById("commentList");
 
@@ -96,20 +97,54 @@ function submitComment() {
   commentInput.value = "";
 }
 
-// Realtime listener untuk komentar
+// Realtime komentar dengan tombol
 db.collection("comments")
   .orderBy("timestamp", "desc")
   .onSnapshot((snapshot) => {
     commentList.innerHTML = "";
     snapshot.forEach((doc) => {
       const data = doc.data();
+
       const comment = document.createElement("div");
       comment.className = "comment-item";
 
       const text = document.createElement("span");
       text.textContent = `${data.username}: ${data.comment}`;
 
+      const actions = document.createElement("span");
+      actions.className = "comment-actions";
+
+      const likeBtn = document.createElement("button");
+      const likeImg = document.createElement("img");
+      likeImg.src = "like_bt.svg";
+      likeImg.alt = "Like";
+      likeImg.style.width = "20px";
+      likeImg.style.height = "20px";
+      likeBtn.appendChild(likeImg);
+
+      let liked = false;
+      likeBtn.addEventListener("click", () => {
+        liked = !liked;
+        likeImg.src = liked ? "love_bt.svg" : "like_bt.svg";
+      });
+
+      const deleteBtn = document.createElement("button");
+      const deleteImg = document.createElement("img");
+      deleteImg.src = "delete_bt.svg";
+      deleteImg.alt = "Delete";
+      deleteImg.style.width = "20px";
+      deleteImg.style.height = "20px";
+      deleteBtn.appendChild(deleteImg);
+
+      deleteBtn.addEventListener("click", () => {
+        db.collection("comments").doc(doc.id).delete();
+      });
+
+      actions.appendChild(likeBtn);
+      actions.appendChild(deleteBtn);
+
       comment.appendChild(text);
+      comment.appendChild(actions);
       commentList.appendChild(comment);
     });
   });
