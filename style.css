@@ -1,0 +1,279 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  height: 100vh;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+body {
+  position: relative;
+  background: white;
+}
+
+.bg-img,
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+}
+
+.bg-img {
+  object-fit: cover;
+}
+
+.overlay {
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.taskbar-main-top {
+  position: fixed;
+  top: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 800px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 3;
+  color: white;
+}
+
+#weather {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#weather .icon {
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+}
+
+.taskbar-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.taskbar-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.taskbar-btn img.icon {
+  width: 18px;
+  height: 18px;
+}
+
+.scroll-area {
+  position: relative;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 2;
+  padding: 120px 0 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.kotak-rasio,
+.interaction-panel {
+  width: 90%;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  color: white;
+}
+
+.kotak-rasio {
+  aspect-ratio: 4 / 3;
+  transition: transform 0.5s ease;
+}
+
+.kotak-rasio.rotate-left {
+  transform: rotateY(-180deg);
+}
+
+.kotak-rasio.rotate-right {
+  transform: rotateY(180deg);
+}
+
+.interaction-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+}
+
+.interaction-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.like-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.comment-bar {
+  flex-grow: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+.comment-bar::placeholder {
+  color: white;
+  opacity: 0.7;
+}
+
+.comment-list {
+  max-height: 120px;
+  overflow-y: auto;
+  scrollbar-color: rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.05);
+  scrollbar-width: thin;
+}
+
+.comment-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.comment-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.comment-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+}
+
+.comment-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.comment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.comment-actions button {
+  margin-left: 8px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+}
+
+.stats-panel {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px;
+  z-index: 3;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.taskbar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 800px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 3;
+  color: white;
+}
+
+.popup {
+  position: fixed;
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  color: white;
+  padding: 16px;
+  z-index: 10;
+  display: none;
+  width: 90%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.popup a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.popup .stat-item {
+  justify-content: center;
+  margin: 8px 0;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}
