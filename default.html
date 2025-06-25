@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HilmiCode</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100vh;
+      overflow: hidden;
+      font-size: 14px;
+    }
+
+    body {
+      position: relative;
+      background: white;
+    }
+
+    .bg-img,
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+    }
+
+    .bg-img {
+      object-fit: cover;
+    }
+
+    .overlay {
+      background: rgba(0, 0, 0, 0.1);
+      z-index: 1;
+    }
+
+    .taskbar-main-top {
+      position: fixed;
+      top: 3%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 800px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 3;
+      color: white;
+    }
+
+    .taskbar-btn {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .taskbar-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .taskbar-btn img.icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .scroll-area {
+      position: relative;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 2;
+      padding: 120px 0 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .kotak-rasio,
+    .interaction-panel {
+      width: 90%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      color: white;
+    }
+
+    
+    .kotak-rasio {
+      aspect-ratio: 4 / 3;
+      transition: transform 0.5s ease;
+    }
+    .kotak-rasio.rotate-left {
+      transform: rotateY(-180deg);
+    }
+    .kotak-rasio.rotate-right {
+      transform: rotateY(180deg);
+    }
+
+    .kotak-rasio {
+      aspect-ratio: 4 / 3;
+    }
+
+    .interaction-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px;
+    }
+
+    .interaction-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .like-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .comment-bar {
+      flex-grow: 1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+
+    .comment-bar::placeholder {
+      color: white;
+      opacity: 0.7;
+    }
+
+    .comment-list {
+  max-height: 120px;
+  overflow-y: auto;
+  scrollbar-color: rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.05);
+  scrollbar-width: thin;
+  }
+  .comment-list::-webkit-scrollbar {
+  width: 8px;
+  }
+  .comment-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  }
+  .comment-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  }
+  .comment-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6);
+  }
+
+    .comment-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .comment-actions button {
+      margin-left: 8px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    .stats-panel {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      color: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px;
+      z-index: 3;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .taskbar {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 800px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 3;
+      color: white;
+    }
+
+    .popup {
+      position: fixed;
+      bottom: 140px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      color: white;
+      padding: 16px;
+      z-index: 10;
+      display: none;
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    .popup a {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .popup .stat-item {
+      justify-content: center;
+      margin: 8px 0;
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <img src="bg.png" alt="Background" class="bg-img">
+  <div class="overlay"></div>
+  <div class="taskbar-main-top">
+    <button id="play-music" class="taskbar-btn"><img id="music-icon" src="play_bt.svg" alt="Play" class="icon"> <span id="music-label">Play Music</span></button>
+    <div id="clock">
+      00:00
+    </div>
+    <div id="weather">
+    <style>#weather { display: flex; align-items: center; gap: 6px; } #weather .icon { vertical-align: middle; width: 20px; height: 20px; }</style>
+      <img src="cloud.svg" alt="Memuat" class="icon"> Memuat...
+    </div>
+  </div>
+  <div class="scroll-area">
+    <div class="kotak-rasio"></div>
+    <div class="interaction-panel">
+      <div class="interaction-controls">
+        <button class="like-btn" id="likeStatic"><img src="like_bt.svg" alt="Like" style="width: 20px; height: 20px;"></button> <input type="text" class="comment-bar" id="commentInput" placeholder="Tulis komentar..."> <button id="submitComment" class="like-btn"><img src="kirim_bt.svg" alt="Kirim" style="width: 20px; height: 20px;"></button>
+      </div>
+      <div class="comment-list" id="commentList"></div>
+    </div>
+  </div>
+  <div class="stats-panel">
+    <div class="stat-item">
+      CPU: <span id="cpu">--%</span>
+    </div>
+    <div class="stat-item">
+      RAM: <span id="ram">--%</span>
+    </div>
+    <div class="stat-item">
+      Storage: <span id="storage">--%</span>
+    </div>
+  </div>
+  <div class="taskbar">
+  <button class="taskbar-btn"><img src="paypal_bt.svg" alt="PayPal" class="icon"> PayPal</button>
+    <button class="taskbar-btn"><img src="game_bt.svg" alt="Game" class="icon"></button>
+    <button class="taskbar-btn"><img src="voila_bt.svg" alt="Voila" class="icon"> Voila!</button> <button class="taskbar-btn"><img src="about_bt.svg" alt="About" class="icon"> About</button>
+  </div>
+  <div class="popup popup-about" id="popupAbout">
+    <p style="margin-bottom: 10px;">[OST] Saya no Uta - Sabbath</p>
+    <div class="stat-item">
+      <img src="github_bt.svg" alt="GitHub" class="icon"> <a href="https://github.com/HilmiRidho" target="_blank">github.com/HilmiRidho</a>
+    </div>
+  </div>
+  <div class="popup popup-voila" id="popupVoila">
+    <p style="margin-bottom: 10px;">Social Media</p>
+    <div class="stat-item">
+      <img src="ig_bt.svg" alt="Instagram" class="icon"> <a href="https://instagram.com/vederallyx" target="_blank">Instagram</a>
+    </div>
+    <div class="stat-item">
+      <img src="fb_bt.svg" alt="Facebook" class="icon"> <a href="https://facebook.com/hilmialiridho" target="_blank">Facebook</a>
+    </div>
+  </div>
+  <div class="popup popup-paypal" id="popupPaypal">
+    <div class="stat-item">
+      <img src="paypal_bt.svg" alt="PayPal" class="icon"> <a href="https://paypal.me/hilmialiridho" target="_blank">Donation</a>
+    </div>
+  </div>
+  </div><audio id="musik" loop=""><source src="music.mp3" type="audio/mpeg"></audio> 
+  <script>
+
+
+    const btn = document.getElementById("play-music");
+    const audio = document.getElementById("musik");
+    const icon = document.getElementById("music-icon");
+    const label = document.getElementById("music-label");
+
+    btn.addEventListener("click", () => {
+      if (audio.paused) {
+        audio.play();
+        icon.src = "pause_bt.svg";
+        label.textContent = "Pause Music";
+      } else {
+        audio.pause();
+        icon.src = "play_bt.svg";
+        label.textContent = "Play Music";
+      }
+    });
+
+    function updateClock() {
+      const now = new Date();
+      const h = now.getHours().toString().padStart(2, "0");
+      const m = now.getMinutes().toString().padStart(2, "0");
+      document.getElementById("clock").textContent = `${h}:${m}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function updateStats() {
+      const cpu = Math.floor(Math.random() * 50) + 10;
+      const ram = Math.floor(Math.random() * 80) + 10;
+      const storage = Math.floor(Math.random() * 90) + 5;
+      document.getElementById("cpu").textContent = cpu + "%";
+      document.getElementById("ram").textContent = ram + "%";
+      document.getElementById("storage").textContent = storage + "%";
+    }
+    setInterval(updateStats, 3000);
+    updateStats();
+
+    function updateWeather() {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+          const data = await res.json();
+          const suhu = data.current_weather.temperature;
+          document.getElementById("weather").innerHTML = `<span style=\"display: flex; align-items: center; gap: 6px;\"><img src=\"temp.svg\" alt=\"Suhu\" style=\"width: 20px; height: 20px;\"> ${suhu}°C</span>`;
+        }, () => {
+          document.getElementById("weather").textContent = "Gagal Ambil Cuaca";
+        });
+      } else {
+        document.getElementById("weather").textContent = "Lokasi Tidak Didukung";
+      }
+    }
+    updateWeather();
+
+    const commentInput = document.getElementById("commentInput");
+    const commentList = document.getElementById("commentList");
+
+    commentInput.addEventListener("focus", () => {
+      if (!localStorage.getItem("username")) {
+        const inputName = prompt("Masukkan username kamu:") || "Anonim";
+        localStorage.setItem("username", inputName);
+      }
+    });
+
+    document.getElementById("submitComment").addEventListener("click", submitComment);
+    commentInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter" && commentInput.value.trim()) {
+        submitComment();
+      }
+    });
+
+    function submitComment() {
+      if (commentInput.value.trim()) {
+        const username = localStorage.getItem("username") || "Anonim";
+        const commentText = commentInput.value.trim();
+
+        const comment = document.createElement("div");
+        comment.className = "comment-item";
+
+        const text = document.createElement("span");
+        text.textContent = `${username}: ${commentText}`;
+
+        const actions = document.createElement("span");
+        actions.className = "comment-actions";
+
+        const likeBtn = document.createElement("button");
+        const likeImg = document.createElement("img");
+        likeImg.src = "like_bt.svg";
+        likeImg.alt = "Like";
+        likeImg.style.width = "20px";
+        likeImg.style.height = "20px";
+        likeBtn.appendChild(likeImg);
+
+        let liked = false;
+        likeBtn.addEventListener("click", () => {
+          liked = !liked;
+          likeImg.src = liked ? "love_bt.svg" : "like_bt.svg";
+        });
+
+        const deleteBtn = document.createElement("button");
+        const deleteImg = document.createElement("img");
+        deleteImg.src = "delete_bt.svg";
+        deleteImg.alt = "Delete";
+        deleteImg.style.width = "20px";
+        deleteImg.style.height = "20px";
+        deleteBtn.appendChild(deleteImg);
+        deleteBtn.addEventListener("click", () => comment.remove());
+
+        actions.appendChild(likeBtn);
+        actions.appendChild(deleteBtn);
+
+        comment.appendChild(text);
+        comment.appendChild(actions);
+        commentList.appendChild(comment);
+
+        commentInput.value = "";
+      }
+    }
+
+    const likeStaticBtn = document.getElementById("likeStatic");
+    const likeStaticImg = likeStaticBtn.querySelector("img");
+    let likedStatic = false;
+    likeStaticBtn.addEventListener("click", () => {
+      likedStatic = !likedStatic;
+      likeStaticImg.src = likedStatic ? "love_bt.svg" : "like_bt.svg";
+    });
+
+    const popupAbout = document.getElementById("popupAbout");
+    const popupVoila = document.getElementById("popupVoila");
+    const popupPaypal = document.getElementById("popupPaypal");
+
+    document.querySelectorAll(".taskbar-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const label = btn.textContent.trim();
+
+        if (label === "About") {
+          popupAbout.style.display = popupAbout.style.display === "none" || popupAbout.style.display === "" ? "block" : "none";
+          popupVoila.style.display = "none";
+          popupPaypal.style.display = "none";
+        }
+
+        if (label.includes("Voila")) {
+          popupVoila.style.display = popupVoila.style.display === "none" || popupVoila.style.display === "" ? "block" : "none";
+          popupAbout.style.display = "none";
+          popupPaypal.style.display = "none";
+        }
+        if (label === "PayPal") {
+          popupPaypal.style.display = popupPaypal.style.display === "none" || popupPaypal.style.display === "" ? "block" : "none";
+          popupAbout.style.display = "none";
+          popupVoila.style.display = "none";
+        }
+      });
+    });
+
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".popup") && !e.target.closest(".taskbar-btn")) {
+        popupAbout.style.display = "none";
+        popupVoila.style.display = "none";
+        popupPaypal.style.display = "none";
+      }
+    });
+  
+    const kotakRasio = document.querySelector('.kotak-rasio');
+    let startX = 0;
+    let isSwiping = false;
+
+    kotakRasio.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      isSwiping = true;
+    });
+
+    kotakRasio.addEventListener('touchmove', (e) => {
+      if (!isSwiping) return;
+      const diffX = e.touches[0].clientX - startX;
+
+      if (diffX > 80 && !kotakRasio.classList.contains('rotate-right')) {
+        kotakRasio.classList.remove('rotate-left');
+        kotakRasio.classList.add('rotate-right');
+        isSwiping = false;
+      } else if (diffX < -80 && !kotakRasio.classList.contains('rotate-left')) {
+        kotakRasio.classList.remove('rotate-right');
+        kotakRasio.classList.add('rotate-left');
+        isSwiping = false;
+      }
+    });
+
+    kotakRasio.addEventListener('touchend', () => {
+      isSwiping = false;
+    });
+
+</script>
+</body>
+</html>
