@@ -8,6 +8,25 @@ firebase.initializeApp({
   measurementId: "G-Y6GL3EBMKY"
 });
 const db = firebase.firestore();
+const auth = firebase.auth();
+let currentUser = null;
+const ADMIN_UID = "MASUKKAN_UID_ADMIN";
+
+auth.signInAnonymously().catch(console.error);
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    currentUser = user;
+
+    if (!localStorage.getItem("username")) {
+      if (user.uid === ADMIN_UID) {
+        localStorage.setItem("username", "Admin");
+      } else {
+        const inputName = prompt("Masukkan username kamu:") || "Anonim";
+        localStorage.setItem("username", inputName);
+      }
+    }
+  }
+});
 
 const btn = document.getElementById("play-music");
 const audio = document.getElementById("musik");
