@@ -94,7 +94,7 @@ body {
   height: 100vh;
   overflow-y: auto;
   z-index: 2;
-  padding: 120px 0 200px;
+  padding: 100px 0 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -163,7 +163,7 @@ body {
 }
 
 .comment-list {
-  max-height: 90px;
+  max-height: 100px;
   overflow-y: auto;
   scrollbar-color: rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.05);
   scrollbar-width: thin;
