@@ -54,7 +54,7 @@ function updateWeather() {
       const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
       const data = await res.json();
       const suhu = data.current_weather.temperature;
-      document.getElementById("weather").innerHTML = `<span style="display: flex; align-items: center; gap: 6px;"><img src="temp.svg" alt="Suhu" style="width: 20px; height: 20px;"> ${suhu}Â°C</span>`;
+      document.getElementById("weather").innerHTML = `<span style="display: flex; align-items: center; gap: 6px;"><img src="temp.svg" alt="Suhu" style="width: 20px; height: 20px;"> ${suhu}°C</span>`;
     }, () => {
       document.getElementById("weather").textContent = "Gagal Ambil Cuaca";
     });
