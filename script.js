@@ -16,7 +16,11 @@ auth.signInAnonymously().catch(console.error);
 auth.onAuthStateChanged((user) => {
   if (user) {
     currentUser = user;
-    alert("UID kamu: " + user.uid);
+
+    const uidBox = document.getElementById("uid-display");
+    if (uidBox) {
+      uidBox.textContent = "UID kamu: " + user.uid;
+    }
 
     if (!localStorage.getItem("username")) {
       if (user.uid === ADMIN_UID) {
