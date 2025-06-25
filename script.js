@@ -245,3 +245,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    console.log("UID:", user.uid);
+    alert("UID kamu: " + user.uid);
+  }
+});
