@@ -1,3 +1,4 @@
+// Inisialisasi Firebase
 firebase.initializeApp({
   apiKey: "AIzaSyDf64ttRcxVtyv_xhb06bHopD1kUiFJI9Y",
   authDomain: "hilmicode-comment.firebaseapp.com",
@@ -9,6 +10,7 @@ firebase.initializeApp({
 });
 const db = firebase.firestore();
 
+// === Musik Player ===
 const btn = document.getElementById("play-music");
 const audio = document.getElementById("musik");
 const icon = document.getElementById("music-icon");
@@ -26,6 +28,7 @@ btn.addEventListener("click", () => {
   }
 });
 
+// === Jam Digital ===
 function updateClock() {
   const now = new Date();
   const h = now.getHours().toString().padStart(2, "0");
@@ -35,6 +38,7 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
+// === Statistik Sistem (randomized dummy) ===
 function updateStats() {
   const cpu = Math.floor(Math.random() * 50) + 10;
   const ram = Math.floor(Math.random() * 80) + 10;
@@ -46,15 +50,25 @@ function updateStats() {
 setInterval(updateStats, 3000);
 updateStats();
 
+// === Informasi Cuaca ===
 function updateWeather() {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(async (pos) => {
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
-      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-      const data = await res.json();
-      const suhu = data.current_weather.temperature;
-      document.getElementById("weather").innerHTML = `<span style="display: flex; align-items: center; gap: 6px;"><img src="temp.svg" alt="Suhu" style="width: 20px; height: 20px;"> ${suhu}°C</span>`;
+
+      try {
+        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+        const data = await res.json();
+        const suhu = data.current_weather.temperature;
+        document.getElementById("weather").innerHTML = `
+          <span style="display: flex; align-items: center; gap: 6px;">
+            <img src="temp.svg" alt="Suhu" style="width: 20px; height: 20px;">
+            ${suhu}°C
+          </span>`;
+      } catch {
+        document.getElementById("weather").textContent = "Gagal Ambil Cuaca";
+      }
     }, () => {
       document.getElementById("weather").textContent = "Gagal Ambil Cuaca";
     });
@@ -64,7 +78,7 @@ function updateWeather() {
 }
 updateWeather();
 
-// Komentar
+// === Sistem Komentar ===
 const commentInput = document.getElementById("commentInput");
 const commentList = document.getElementById("commentList");
 
@@ -76,6 +90,7 @@ commentInput.addEventListener("focus", () => {
 });
 
 document.getElementById("submitComment").addEventListener("click", submitComment);
+
 commentInput.addEventListener("keypress", function (e) {
   if (e.key === "Enter" && commentInput.value.trim()) {
     submitComment();
@@ -85,8 +100,7 @@ commentInput.addEventListener("keypress", function (e) {
 function submitComment() {
   const username = localStorage.getItem("username") || "Anonim";
   const commentText = commentInput.value.trim();
-
-  if (commentText === "") return;
+  if (!commentText) return;
 
   db.collection("comments").add({
     username,
@@ -97,7 +111,7 @@ function submitComment() {
   commentInput.value = "";
 }
 
-// Realtime komentar dengan tombol
+// === Menampilkan komentar secara realtime ===
 db.collection("comments")
   .orderBy("timestamp", "desc")
   .onSnapshot((snapshot) => {
@@ -109,15 +123,15 @@ db.collection("comments")
       comment.className = "comment-item";
 
       const urlifiedComment = data.comment.replace(
-  /\b((https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{1,63}(\/[^\s]*)?)/gi,
-  (match) => {
-    const href = match.startsWith("http") ? match : `https://${match}`;
-    return `<a href="${href}" target="_blank" style="color:#FFFFFF;text-decoration:underline;">${match}</a>`;
-  }
-);
-const text = document.createElement("span");
-text.innerHTML = `${data.username}: ${urlifiedComment}`;
+        /\b((https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{1,63}(\/[^\s]*)?)/gi,
+        (match) => {
+          const href = match.startsWith("http") ? match : `https://${match}`;
+          return `<a href="${href}" target="_blank" style="color:#FFFFFF;text-decoration:underline;">${match}</a>`;
+        }
+      );
 
+      const text = document.createElement("span");
+      text.innerHTML = `${data.username}: ${urlifiedComment}`;
 
       const actions = document.createElement("span");
       actions.className = "comment-actions";
@@ -126,8 +140,7 @@ text.innerHTML = `${data.username}: ${urlifiedComment}`;
       const likeImg = document.createElement("img");
       likeImg.src = "like_bt.svg";
       likeImg.alt = "Like";
-      likeImg.style.width = "20px";
-      likeImg.style.height = "20px";
+      likeImg.style.width = likeImg.style.height = "20px";
       likeBtn.appendChild(likeImg);
 
       let liked = false;
@@ -140,8 +153,7 @@ text.innerHTML = `${data.username}: ${urlifiedComment}`;
       const deleteImg = document.createElement("img");
       deleteImg.src = "delete_bt.svg";
       deleteImg.alt = "Delete";
-      deleteImg.style.width = "20px";
-      deleteImg.style.height = "20px";
+      deleteImg.style.width = deleteImg.style.height = "20px";
       deleteBtn.appendChild(deleteImg);
 
       deleteBtn.addEventListener("click", () => {
@@ -157,14 +169,17 @@ text.innerHTML = `${data.username}: ${urlifiedComment}`;
     });
   });
 
+// === Like Button Static ===
 const likeStaticBtn = document.getElementById("likeStatic");
 const likeStaticImg = likeStaticBtn.querySelector("img");
 let likedStatic = false;
+
 likeStaticBtn.addEventListener("click", () => {
   likedStatic = !likedStatic;
   likeStaticImg.src = likedStatic ? "love_bt.svg" : "like_bt.svg";
 });
 
+// === Popup dari Taskbar ===
 const popupAbout = document.getElementById("popupAbout");
 const popupVoila = document.getElementById("popupVoila");
 const popupPaypal = document.getElementById("popupPaypal");
@@ -191,6 +206,7 @@ document.addEventListener("click", function (e) {
   }
 });
 
+// === Swipe untuk rotasi kotak rasio ===
 const kotakRasio = document.querySelector('.kotak-rasio');
 let startX = 0;
 let isSwiping = false;
@@ -219,6 +235,7 @@ kotakRasio.addEventListener('touchend', () => {
   isSwiping = false;
 });
 
+// === Tombol Game (toggle iframe game) ===
 document.addEventListener("DOMContentLoaded", function () {
   const gameBtn = document.getElementById("game-btn");
   const kotakRasio = document.querySelector('.kotak-rasio');
@@ -226,7 +243,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   gameBtn.addEventListener("click", () => {
     if (!gameActive) {
-      kotakRasio.innerHTML = '<iframe src="game/index.html" style="width:100%;height:100%;border:none;border-radius:16px;"></iframe>';
+      kotakRasio.innerHTML = '<iframe src="https://jump.zixing.fun/java" style="width:100%;height:100%;border:none;border-radius:16px;"></iframe>';
       gameActive = true;
     } else {
       kotakRasio.innerHTML = '';
