@@ -17,6 +17,8 @@ auth.onAuthStateChanged((user) => {
   if (user) {
     currentUser = user;
 
+    alert("UID kamu: " + user.uid);
+
     if (!localStorage.getItem("username")) {
       if (user.uid === ADMIN_UID) {
         localStorage.setItem("username", "Admin");
@@ -244,11 +246,4 @@ document.addEventListener("DOMContentLoaded", function () {
       gameActive = false;
     }
   });
-});
-
-auth.onAuthStateChanged((user) => {
-  if (user) {
-    console.log("UID:", user.uid);
-    alert("UID kamu: " + user.uid);
-  }
 });
