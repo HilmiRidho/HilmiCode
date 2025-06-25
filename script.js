@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // =================================================================
+  // BAGIAN 1: FIREBASE & KOMENTAR (KODE ASLI ANDA)
+  // =================================================================
+
   // Firebase Initialization
   firebase.initializeApp({
     apiKey: "AIzaSyDf64ttRcxVtyv_xhb06bHopD1kUiFJI9Y",
@@ -21,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (user) {
       currentUser = user;
 
-      // ✅ Tampilkan UID langsung di halaman
+      // Tampilkan UID langsung di halaman
       const uidBox = document.getElementById("uid-display");
       if (uidBox) {
         uidBox.textContent = "UID kamu: " + user.uid;
@@ -43,13 +47,19 @@ document.addEventListener("DOMContentLoaded", () => {
   // Komentar
   const commentInput = document.getElementById("commentInput");
   const commentList = document.getElementById("commentList");
+  const submitBtn = document.getElementById("submitComment");
 
-  document.getElementById("submitComment").addEventListener("click", submitComment);
-  commentInput.addEventListener("keypress", function (e) {
-    if (e.key === "Enter" && commentInput.value.trim()) {
-      submitComment();
-    }
-  });
+  if (submitBtn) {
+    submitBtn.addEventListener("click", submitComment);
+  }
+  
+  if (commentInput) {
+    commentInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter" && commentInput.value.trim()) {
+        submitComment();
+      }
+    });
+  }
 
   function submitComment() {
     const username = localStorage.getItem("username") || "Anonim";
@@ -120,82 +130,91 @@ document.addEventListener("DOMContentLoaded", () => {
         commentList.appendChild(comment);
       });
     });
-});
+    
+  // =================================================================
+  // BAGIAN 2: TOMBOL, POPUP, SWIPE, GAME (KODE YANG DIPINDAHKAN KE DALAM)
+  // =================================================================
+    
+  const likeStaticBtn = document.getElementById("likeStatic");
+  if (likeStaticBtn) {
+    const likeStaticImg = likeStaticBtn.querySelector("img");
+    let likedStatic = false;
+    likeStaticBtn.addEventListener("click", () => {
+      likedStatic = !likedStatic;
+      likeStaticImg.src = likedStatic ? "love_bt.svg" : "like_bt.svg";
+    });
+  }
 
-const likeStaticBtn = document.getElementById("likeStatic");
-const likeStaticImg = likeStaticBtn.querySelector("img");
-let likedStatic = false;
-likeStaticBtn.addEventListener("click", () => {
-  likedStatic = !likedStatic;
-  likeStaticImg.src = likedStatic ? "love_bt.svg" : "like_bt.svg";
-});
+  const popupAbout = document.getElementById("popupAbout");
+  const popupVoila = document.getElementById("popupVoila");
+  const popupPaypal = document.getElementById("popupPaypal");
 
-const popupAbout = document.getElementById("popupAbout");
-const popupVoila = document.getElementById("popupVoila");
-const popupPaypal = document.getElementById("popupPaypal");
-
-document.querySelectorAll(".taskbar-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const label = btn.textContent.trim();
-
-    popupAbout.style.display = (label === "About") ? togglePopup(popupAbout) : "none";
-    popupVoila.style.display = label.includes("Voila") ? togglePopup(popupVoila) : "none";
-    popupPaypal.style.display = (label === "PayPal") ? togglePopup(popupPaypal) : "none";
+  document.querySelectorAll(".taskbar-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const label = btn.textContent.trim();
+      
+      if(popupAbout) popupAbout.style.display = (label === "About") ? togglePopup(popupAbout) : "none";
+      if(popupVoila) popupVoila.style.display = label.includes("Voila") ? togglePopup(popupVoila) : "none";
+      if(popupPaypal) popupPaypal.style.display = (label === "PayPal") ? togglePopup(popupPaypal) : "none";
+    });
   });
-});
 
-function togglePopup(popup) {
-  return popup.style.display === "none" || popup.style.display === "" ? "block" : "none";
-}
-
-document.addEventListener("click", function (e) {
-  if (!e.target.closest(".popup") && !e.target.closest(".taskbar-btn")) {
-    popupAbout.style.display = "none";
-    popupVoila.style.display = "none";
-    popupPaypal.style.display = "none";
+  function togglePopup(popup) {
+    if (!popup) return "none";
+    return popup.style.display === "none" || popup.style.display === "" ? "block" : "none";
   }
-});
 
-const kotakRasio = document.querySelector('.kotak-rasio');
-let startX = 0;
-let isSwiping = false;
-
-kotakRasio.addEventListener('touchstart', (e) => {
-  startX = e.touches[0].clientX;
-  isSwiping = true;
-});
-
-kotakRasio.addEventListener('touchmove', (e) => {
-  if (!isSwiping) return;
-  const diffX = e.touches[0].clientX - startX;
-
-  if (diffX > 80 && !kotakRasio.classList.contains('rotate-right')) {
-    kotakRasio.classList.remove('rotate-left');
-    kotakRasio.classList.add('rotate-right');
-    isSwiping = false;
-  } else if (diffX < -80 && !kotakRasio.classList.contains('rotate-left')) {
-    kotakRasio.classList.remove('rotate-right');
-    kotakRasio.classList.add('rotate-left');
-    isSwiping = false;
-  }
-});
-
-kotakRasio.addEventListener('touchend', () => {
-  isSwiping = false;
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-  const gameBtn = document.getElementById("game-btn");
-  const kotakRasio = document.querySelector('.kotak-rasio');
-  let gameActive = false;
-
-  gameBtn.addEventListener("click", () => {
-    if (!gameActive) {
-      kotakRasio.innerHTML = '<iframe src="game/index.html" style="width:100%;height:100%;border:none;border-radius:16px;"></iframe>';
-      gameActive = true;
-    } else {
-      kotakRasio.innerHTML = '';
-      gameActive = false;
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest(".popup") && !e.target.closest(".taskbar-btn")) {
+      if(popupAbout) popupAbout.style.display = "none";
+      if(popupVoila) popupVoila.style.display = "none";
+      if(popupPaypal) popupPaypal.style.display = "none";
     }
   });
-});
+
+  const kotakRasio = document.querySelector('.kotak-rasio');
+  if (kotakRasio) {
+    let startX = 0;
+    let isSwiping = false;
+
+    kotakRasio.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      isSwiping = true;
+    });
+
+    kotakRasio.addEventListener('touchmove', (e) => {
+      if (!isSwiping) return;
+      const diffX = e.touches[0].clientX - startX;
+
+      if (diffX > 80 && !kotakRasio.classList.contains('rotate-right')) {
+        kotakRasio.classList.remove('rotate-left');
+        kotakRasio.classList.add('rotate-right');
+        isSwiping = false;
+      } else if (diffX < -80 && !kotakRasio.classList.contains('rotate-left')) {
+        kotakRasio.classList.remove('rotate-right');
+        kotakRasio.classList.add('rotate-left');
+        isSwiping = false;
+      }
+    });
+
+    kotakRasio.addEventListener('touchend', () => {
+      isSwiping = false;
+    });
+  }
+
+  const gameBtn = document.getElementById("game-btn");
+  if (gameBtn) {
+    let gameActive = false;
+    gameBtn.addEventListener("click", () => {
+      if (kotakRasio) { // Pastikan kotakRasio ada
+        if (!gameActive) {
+          kotakRasio.innerHTML = '<iframe src="game/index.html" style="width:100%;height:100%;border:none;border-radius:16px;"></iframe>';
+          gameActive = true;
+        } else {
+          kotakRasio.innerHTML = ''; // Hapus iframe
+          gameActive = false;
+        }
+      }
+    });
+  }
+}); // <-- Ini adalah penutup tunggal dari DOMContentLoaded
